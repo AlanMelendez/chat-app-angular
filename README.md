@@ -1,27 +1,50 @@
-# ChatApp
+# 💬 Chat en Tiempo Real con Angular y NestJS 🚀
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.8.
+![Vista Previa del Chat](public/img/chat-preview.png)
 
-## Development server
+Este proyecto implementa un sistema de **chat en tiempo real** utilizando **Angular** para el frontend y **NestJS** para el backend, con **Socket.IO** para la comunicación en tiempo real.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+---
 
-## Code scaffolding
+## 📑 **Características Principales**
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+✅ **Chat Cliente-Mesero:** Comunicación en tiempo real entre clientes y meseros.  
+✅ **Soporte Multi-Sala:** Cada mesa tiene su propia sala de chat independiente.  
+✅ **Mensajes Persistentes:** Los mensajes se guardan en una base de datos MySQL.  
+✅ **Notificaciones Dinámicas:** Indicadores de mensajes no leídos.  
+✅ **Interfaz Moderna:** UI inspirada en diseños profesionales, con **TailwindCSS**.  
+✅ **Autenticación Simple:** Sistema de autenticación con JWT.
 
-## Build
+---
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## ⚙️ **Tecnologías Utilizadas**
 
-## Running unit tests
+### **Frontend (Angular)**
+- Angular 17
+- Socket.IO Client
+- TailwindCSS
+- RxJS
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### **Backend (NestJS)**
+- NestJS
+- Socket.IO
+- TypeORM
+- MySQL
+- Docker
 
-## Running end-to-end tests
+---
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## 🛠️ **Instalación y Configuración**
 
-## Further help
+### 🔑 **Requisitos Previos**
+- Node.js (v16+)
+- Angular CLI (v17+)
+- MySQL
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+### 📥 **1. Clonar el Repositorio**
+
+```bash
+git clone https://github.com/AlanMelendez/chat-app-angular.git
+cd chat-app-angular

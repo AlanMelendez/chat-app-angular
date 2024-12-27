@@ -1,0 +1,83 @@
+<div class="flex h-screen bg-[#f7f7f7] text-[#333333] shadow-xl rounded-lg overflow-hidden border border-[#d1d1d1]">
+  <!-- 📋 Sidebar: Lista de Mesas -->
+  <div class="w-1/4 bg-[#333333] text-white flex flex-col">
+    <h2 class="text-lg font-semibold bg-[#cb001a] p-4 text-center">📝 Mesas Activas</h2>
+    <ul class="flex-1 overflow-y-auto">
+      <li
+        *ngFor="let mesa of mesas"
+        (click)="selectMesa(mesa.id)"
+        [ngClass]="{'bg-[#cb001a]': selectedMesaId === mesa.id}"
+        class="p-4 border-b border-[#444444] cursor-pointer hover:bg-[#cb001a]"
+      >
+        Mesa {{ mesa.id }}
+        <span *ngIf="mesa.unreadMessages" class="ml-2 text-sm text-[#f7f7f7] bg-[#d1001a] rounded-full px-2">●</span>
+      </li>
+    </ul>
+    <button (click)="disconnect()" class="p-4 bg-[#d1001a] text-white text-center hover:bg-[#8d0012]">
+      Desconectar 🚪
+    </button>
+  </div>
+
+  <!-- 💬 Ventana de Chat -->
+  <div class="w-3/4 flex flex-col">
+    <!-- 🔴 Header del Chat -->
+    <div class="flex items-center justify-between bg-[#cb001a] text-white p-4 shadow-md">
+      <h2 class="text-xl font-semibold">💬 Chat - Mesa {{ selectedMesaId || 'Selecciona una Mesa' }}</h2>
+    </div>
+
+    <!-- 📨 Área de Mensajes -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-[#ffffff]" id="chat-box">
+      <div
+        *ngFor="let msg of messages"
+        [ngClass]="{
+          'justify-end': msg.sender === 'mesero',
+          'justify-start': msg.sender === 'cliente'
+        }"
+        class="flex items-start space-x-2"
+      >
+        <!-- Avatar Cliente -->
+        <img
+          *ngIf="msg.sender === 'cliente'"
+          [src]="msg.avatar"
+          alt="Cliente"
+          class="w-8 h-8 rounded-full border border-[#d1d1d1] shadow-md"
+        />
+        <div
+          [ngClass]="{
+            'bg-[#cb001a] text-white': msg.sender === 'mesero',
+            'bg-[#f7f7f7] text-[#333333] border border-[#d1d1d1]': msg.sender === 'cliente'
+          }"
+          class="rounded-xl px-4 py-2 max-w-md shadow-md"
+        >
+          <p class="text-sm">{{ msg.content }}</p>
+          <span class="block text-xs mt-1 text-right text-[#d1d1d1]">{{ msg.timestamp }}</span>
+        </div>
+        <!-- Avatar Mesero -->
+        <img
+          *ngIf="msg.sender === 'mesero'"
+          [src]="msg.avatar"
+          alt="Mesero"
+          class="w-8 h-8 rounded-full border border-[#d1d1d1] shadow-md"
+        />
+      </div>
+    </div>
+
+    <!-- 🖊️ Área de Entrada de Mensajes -->
+    <div class="p-4 bg-[#ffffff] border-t border-[#d1d1d1]">
+      <div class="flex items-center space-x-2">
+        <input
+          type="text"
+          [(ngModel)]="message"
+          placeholder="Escribe un mensaje..."
+          class="flex-1 rounded-full border border-[#d1d1d1] px-4 py-2 text-[#333333] bg-[#ffffff] focus:outline-none focus:ring-2 focus:ring-[#cb001a]"
+        />
+        <button
+          (click)="sendMessage()"
+          class="bg-[#cb001a] text-white rounded-full px-4 py-2 hover:bg-[#8d0012] shadow-md"
+        >
+          Enviar 🚀
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
