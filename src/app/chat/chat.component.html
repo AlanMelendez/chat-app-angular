@@ -6,13 +6,14 @@
   </div>
 
   <!-- 📨 Área de Mensajes -->
-  <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-[#ffffff]" id="chat-box">
+  <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-[#ffffff]" id="chat-box" #chatBox>
     <!-- 📝 Renderizar Mensajes Dinámicos -->
     <div
       *ngFor="let msg of messages"
       [ngClass]="{
         'justify-end': msg.sender === 'cliente',
-        'justify-start': msg.sender === 'mesero'
+        'justify-start': msg.sender === 'mesero',
+        'justify-center': msg.sender === 'system'
       }"
       class="flex items-start space-x-2"
     >
@@ -30,10 +31,20 @@
           'bg-[#cb001a] text-white': msg.sender === 'cliente',
           'bg-[#f7f7f7] text-[#333333] border border-[#d1d1d1]': msg.sender === 'mesero'
         }"
-        class="rounded-xl px-4 py-2 max-w-md shadow-md"
+        class="rounded-xl px-4 py-2 max-w-md shadow-md break-words overflow-hidden"
+        *ngIf="msg.sender != 'system'"
       >
         <p class="text-sm">{{ msg.content }}</p>
-        <span class="block text-xs mt-1 text-right text-[#d1d1d1]">{{ msg.timestamp }}</span>
+        <span class="block text-xs mt-1 text-right text-[#d1d1d1]">{{ msg.timestamp | date: 'HH:mm' }}</span>
+      </div>
+
+      <!-- 🚨 Mensaje de Sistema -->
+      <div
+        *ngIf="msg.sender === 'system'"
+        class="w-full text-center bg-[#fff3cd] text-[#856404] border border-[#ffeeba] rounded-md py-2 px-4 my-4 shadow-md"
+      >
+        <p class="font-semibold">{{ msg.content }}</p>
+        <span class="block text-xs mt-1">{{ msg.timestamp | date: 'dd/MM/yyyy HH:mm' }}</span>
       </div>
 
       <!-- 📸 Avatar (Usuario) -->
@@ -50,11 +61,22 @@
   <div class="p-4 bg-[#ffffff] border-t border-[#d1d1d1]">
     <div class="flex items-center space-x-2">
       <input
+      (keydown)="enter($event)"
+
+        #messageInput
         type="text"
         [(ngModel)]="message"
         placeholder="Escribe un mensaje..."
         class="flex-1 rounded-full border border-[#d1d1d1] px-4 py-2 text-[#333333] bg-[#ffffff] focus:outline-none focus:ring-2 focus:ring-[#cb001a]"
       />
+      <!-- Send notificaction -->
+      <button
+      class="bg-[#cb001a] text-white rounded-full px-4 py-2 hover:bg-[#8d0012] shadow-md"
+      (click)="sendNotification()"
+      >
+        🛎️
+      </button>
+      <!-- Send message -->
       <button
         (click)="sendMessage()"
         class="bg-[#cb001a] text-white rounded-full px-4 py-2 hover:bg-[#8d0012] shadow-md"

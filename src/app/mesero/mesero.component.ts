@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 interface Message {
-  sender: 'cliente' | 'mesero';
+  sender: 'cliente' | 'mesero' | 'system';
   content: string;
   timestamp: string;
   avatar: string;
+  userType: string;
 }
 
 interface Mesa {
@@ -41,15 +42,39 @@ export class MeseroComponent implements OnInit, OnDestroy {
       if (message.room === 'mesa_'+this.selectedMesaId && message.remitenteId === 1) {
 
         this.messages.push({
-          sender: 'cliente',
+          sender: message.userType,
           content: message.contenido,
           timestamp: new Date().toLocaleTimeString(),
-          avatar: 'https://wallpapercave.com/wp/wp2469066.jpg'
+          avatar: message.userType === 'cliente' ? 'https://alancuevasmelendez.com/img/me-one.png' : 'https://wallpapercave.com/wp/wp2469066.jpg',
+          userType: message.userType
         });
+        this.scrollToBottom();
       } else {
         const mesa = this.mesas.find((m) => m.id === message.mesaId);
         if (mesa) mesa.unreadMessages = true;
       }
+
+    });
+    this.socketService.onEvent('messagesHistory').subscribe((message: any) => {
+      console.log('Mensajes anteriores: ', message);
+
+      let messages = message.messages;
+      messages.forEach((message: any) => {
+        switch(message.userType) {
+          case 'cliente':
+            this.setMessage(message.contenido, 'cliente');
+            break;
+          case 'mesero':
+            this.setMessage(message.contenido, 'mesero');
+            break;
+          default:
+            this.setMessage(message.contenido, 'system');
+            break;
+
+        }
+      });
+
+      this.scrollToBottom();
     });
   }
 
@@ -71,17 +96,49 @@ export class MeseroComponent implements OnInit, OnDestroy {
         mesaId: this.selectedMesaId,
         contenido: this.message,
         remitenteId: 2,
-        negocioId: 'negocio_45'
+        negocioId: 'negocio_45',
+        userType: 'mesero'
       });
 
       this.messages.push({
         sender: 'mesero',
         content: this.message,
         timestamp: new Date().toLocaleTimeString(),
-        avatar: 'https://alancuevasmelendez.com/img/me-one.png'
+        avatar: 'https://wallpapercave.com/wp/wp2469066.jpg',
+        userType: 'mesero'
       });
 
       this.message = '';
+      this.scrollToBottom();
+    }
+  }
+  setMessage(message: string, sender: 'cliente' | 'mesero' | 'system' ) {
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    this.messages.push({
+      sender: sender,
+      content: message,
+      timestamp,
+      avatar: sender === 'cliente' ? 'https://alancuevasmelendez.com/img/me-one.png' : 'https://wallpapercave.com/wp/wp2469066.jpg',
+      userType: sender
+
+    });
+
+    //Clear the input
+    this.message = '';
+  }
+  scrollToBottom() {
+    setTimeout(() => {
+      const chatBox = document.getElementById('chat-box');
+      if (chatBox) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }, 100);
+  }
+
+  enter($event:any) {
+    if ($event.key === 'Enter') {
+      this.sendMessage();
     }
   }
 
